@@ -40,7 +40,7 @@ self.addEventListener('fetch', function(event) {
                         .then(function(res) {
                             caches.open('dynamic')
                                 .then(function(cache) {
-                                    cache.put(event.request.url, res)
+                                    cache.put(event.request.url, res.clone())
                                     return res;
                                 })
                         });
