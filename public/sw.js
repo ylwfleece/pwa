@@ -4,15 +4,6 @@ self.addEventListener('install', function(event) {
         caches.open('static')
             .then(function(cache) {
                 console.log('[Service Worker] Precaching App Shell');
-                // cache.add('/src/js/app.js/')
-                // cache.add('/src/js/feed.js/')
-                // cache.add('/src/js/fetch.js/')  
-                // cache.add('/src/js/promise.js/')
-                // cache.add('/index.html')
-                // cache.add('/')
-                // cache.add('/src/js/material.min.js/')
-                // cache.add('/src/css/app.css')
-                // cache.add('/src/css/feed.js/')
                 cache.addAll([
                     '/src/js/app.js/',
                     '/src/js/feed.js/',
@@ -45,7 +36,14 @@ self.addEventListener('fetch', function(event) {
                 if (response) {
                     return response;
                 } else {
-                    return fetch(event.request);
+                    return fetch(event.request)
+                        .then(function(res) {
+                            caches.open('dynamic')
+                                .then(function(cache) {
+                                    cache.put(event.request.url, res)
+                                    return res;
+                                })
+                        });
                 }
             })
             
